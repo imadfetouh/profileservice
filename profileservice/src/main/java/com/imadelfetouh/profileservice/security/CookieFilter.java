@@ -23,7 +23,7 @@ public class CookieFilter implements Filter {
         if(cookies != null) {
             Cookie cookie = Arrays.stream(cookies).filter(c -> c.getName().equals("jwt-token")).findFirst().orElse(null);
             if(cookie == null) {
-                httpServletResponse.setStatus(422);
+                httpServletResponse.setStatus(401);
                 return;
             }
             else{

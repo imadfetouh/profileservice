@@ -16,9 +16,4 @@ public class ProfileDalDB implements ProfileDal {
         Executer<ProfileDTO> executer = new Executer<>(SessionType.READ);
         return executer.execute(new GetProfileExecuter(userId));
     }
-
-    public static void main(String[] args) {
-        Executer<ProfileDTO> executer = new Executer<>(SessionType.WRITE);
-        executer.execute(new GetProfileExecuter("123"));
-    }
 }

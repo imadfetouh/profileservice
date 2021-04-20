@@ -9,9 +9,22 @@ import java.io.Serializable;
 @Table(name = "profile")
 public class Profile implements Serializable {
 
+    public Profile() {
+
+    }
+
+    public Profile(String profileId, String bio, String location, String website) {
+        this.profileId = profileId;
+        this.bio = bio;
+        this.location = location;
+        this.website = website;
+    }
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
     @Column(name = "profileId")
     private String profileId;
 

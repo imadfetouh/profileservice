@@ -11,11 +11,13 @@ public class Tweet implements Serializable {
 
     }
 
-    public Tweet(String content, Long date, String time, Integer likes) {
+    public Tweet(String tweetId, String content, Long date, String time, Integer likes, User user) {
+        this.tweetId = tweetId;
         this.content = content;
         this.date = date;
         this.time = time;
         this.likes = likes;
+        this.user = user;
     }
 
     @Id

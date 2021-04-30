@@ -8,10 +8,7 @@ import com.imadelfetouh.profileservice.model.response.ResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/profile")
@@ -26,6 +23,13 @@ public class ProfileResource {
         UserData userData = gson.fromJson(userDataString, UserData.class);
 
         ResponseModel<ProfileDTO> responseModel = profileDal.getProfile(userData.getUserId());
+
+        return ResponseEntity.ok().body(responseModel.getData());
+    }
+
+    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProfileDTO> getProfileFromUser(@PathVariable("userId") String userId) {
+        ResponseModel<ProfileDTO> responseModel = profileDal.getProfile(userId);
 
         return ResponseEntity.ok().body(responseModel.getData());
     }

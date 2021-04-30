@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profileservice-deployment
+  labels:
+    app: profileservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profileservice
+  template:
+    metadata:
+      labels:
+        app: profileservice
+    spec:
+      containers:
+        - name: profileservice
+          imagePullPolicy: Always
+          image: imadelfetouh99/profileservice:latest
+          ports:
+            - containerPort: 8084
+          env:
+            - name: PROFILESERVICE_MYSQL_MASTER_HOST
+              value: mysql-profileservice-master-service
+            - name: PROFILESERVICE_MYSQL_REPLICA_HOST
+              value: mysql-profileservice-replica-service
+            - name: PROFILESERVICE_MYSQL_MASTER_PORT
+              value: '3315'
+            - name: PROFILESERVICE_MYSQL_REPLICA_PORT
+              value: '3317'
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: password
+            - name: RABBIT_HOST
+              value: rabbit-service
+            - name: secretkey
+              value: secretkeyforkwetterimadinjwt@semester6
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profileservice-service
+spec:
+  selector:
+    app: profileservice
+  ports:
+    - port: 8084
+      targetPort: 8080

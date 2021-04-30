@@ -22,7 +22,7 @@ public class SessionReadConfiguration {
 
         Properties properties = readWriteConfiguration.getProperties();
         configuration.addProperties(properties);
-        configuration.getProperties().put(Environment.URL, "jdbc:mysql://"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_HOST")+":"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_PORT")+"/profileservice");
+        configuration.getProperties().put(Environment.URL, "jdbc:mysql://"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_HOST")+":"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_PORT")+"/profileservice?createDatabaseIfNotExist=true");
 
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Profile.class);

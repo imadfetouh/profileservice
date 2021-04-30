@@ -9,6 +9,7 @@ import com.imadelfetouh.profileservice.model.response.ResponseModel;
 import com.imadelfetouh.profileservice.model.response.ResponseType;
 import org.hibernate.Session;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,16 @@ public class GetProfileExecuter implements QueryExecuter<ProfileDTO> {
         Query query = session.createQuery("SELECT u FROM User u JOIN FETCH u.profile p JOIN FETCH u.tweets t WHERE u.userId = :userId");
         query.setParameter("userId", userId);
 
-        User user = (User) query.getSingleResult();
+        User user;
+
+        try{
+            user = (User) query.getSingleResult();
+        }
+        catch (NoResultException e) {
+            responseModel.setResponseType(ResponseType.USERNOTFOUND);
+            return responseModel;
+        }
+
         List<TweetDTO> tweets = new ArrayList<>();
         for(Tweet tweet : user.getTweets()) {
             TweetDTO tweetDTO = new TweetDTO(tweet.getTweetId(), tweet.getContent(), tweet.getDate(), tweet.getTime(), tweet.getLikes());

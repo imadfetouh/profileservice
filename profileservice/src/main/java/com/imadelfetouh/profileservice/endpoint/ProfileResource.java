@@ -5,6 +5,7 @@ import com.imadelfetouh.profileservice.dalinterface.ProfileDal;
 import com.imadelfetouh.profileservice.model.dto.ProfileDTO;
 import com.imadelfetouh.profileservice.model.jwt.UserData;
 import com.imadelfetouh.profileservice.model.response.ResponseModel;
+import com.imadelfetouh.profileservice.model.response.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,28 @@ public class ProfileResource {
 
         ResponseModel<ProfileDTO> responseModel = profileDal.getProfile(userData.getUserId());
 
-        return ResponseEntity.ok().body(responseModel.getData());
+        if(responseModel.getResponseType().equals(ResponseType.USERNOTFOUND)) {
+            return ResponseEntity.noContent().build();
+        }
+        else if(responseModel.getResponseType().equals(ResponseType.CORRECT)) {
+            return ResponseEntity.ok().body(responseModel.getData());
+        }
+
+        return ResponseEntity.status(500).build();
+
     }
 
-    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProfileDTO> getProfileFromUser(@PathVariable("userId") String userId) {
         ResponseModel<ProfileDTO> responseModel = profileDal.getProfile(userId);
 
-        return ResponseEntity.ok().body(responseModel.getData());
+        if(responseModel.getResponseType().equals(ResponseType.USERNOTFOUND)) {
+            return ResponseEntity.noContent().build();
+        }
+        else if(responseModel.getResponseType().equals(ResponseType.CORRECT)) {
+            return ResponseEntity.ok().body(responseModel.getData());
+        }
+
+        return ResponseEntity.status(500).build();
     }
 }

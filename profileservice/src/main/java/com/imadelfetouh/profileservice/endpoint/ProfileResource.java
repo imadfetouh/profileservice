@@ -18,27 +18,12 @@ public class ProfileResource {
     @Autowired
     private ProfileDal profileDal;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProfileDTO> getProfile(@RequestAttribute("userdata") String userDataString) {
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProfileDTO> getProfileFromUser(@RequestAttribute("userdata") String userDataString, @PathVariable("userId") String userId) {
         Gson gson = new Gson();
         UserData userData = gson.fromJson(userDataString, UserData.class);
 
-        ResponseModel<ProfileDTO> responseModel = profileDal.getProfile(userData.getUserId());
-
-        if(responseModel.getResponseType().equals(ResponseType.USERNOTFOUND)) {
-            return ResponseEntity.noContent().build();
-        }
-        else if(responseModel.getResponseType().equals(ResponseType.CORRECT)) {
-            return ResponseEntity.ok().body(responseModel.getData());
-        }
-
-        return ResponseEntity.status(500).build();
-
-    }
-
-    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProfileDTO> getProfileFromUser(@PathVariable("userId") String userId) {
-        ResponseModel<ProfileDTO> responseModel = profileDal.getProfile(userId);
+        ResponseModel<ProfileDTO> responseModel = profileDal.getProfile(userId, userData.getUserId());
 
         if(responseModel.getResponseType().equals(ResponseType.USERNOTFOUND)) {
             return ResponseEntity.noContent().build();

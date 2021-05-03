@@ -10,20 +10,25 @@ public class ProfileDTO {
     private String bio;
     private String location;
     private String website;
+    private Long following;
+    private Long followers;
+    private Integer follow;
     private List<TweetDTO> tweets;
 
     public ProfileDTO() {
 
     }
 
-    public ProfileDTO(String userId, String username, String photo, String bio, String location, String website, List<TweetDTO> tweets) {
+    public ProfileDTO(String userId, String username, String photo, String bio, String location, String website, Long following, Long followers, Integer follow) {
         this.userId = userId;
         this.username = username;
         this.photo = photo;
         this.bio = bio;
         this.location = location;
         this.website = website;
-        this.tweets = tweets;
+        this.following = following;
+        this.followers = followers;
+        this.follow = follow;
     }
 
     public void setUserId(String userId) {
@@ -72,6 +77,30 @@ public class ProfileDTO {
 
     public String getWebsite() {
         return website;
+    }
+
+    public void setFollowing(Long following) {
+        this.following = following;
+    }
+
+    public Long getFollowing() {
+        return following;
+    }
+
+    public void setFollowers(Long followers) {
+        this.followers = followers;
+    }
+
+    public Long getFollowers() {
+        return followers;
+    }
+
+    public void setFollow(Integer follow) {
+        this.follow = follow;
+    }
+
+    public Integer getFollow() {
+        return follow;
     }
 
     public void setTweets(List<TweetDTO> tweets) {

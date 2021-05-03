@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 public class ProfileDalDB implements ProfileDal {
 
     @Override
-    public ResponseModel<ProfileDTO> getProfile(String userId) {
+    public ResponseModel<ProfileDTO> getProfile(String userId, String ownId) {
         Executer<ProfileDTO> executer = new Executer<>(SessionType.READ);
-        return executer.execute(new GetProfileExecuter(userId));
+        return executer.execute(new GetProfileExecuter(userId, ownId));
     }
 }

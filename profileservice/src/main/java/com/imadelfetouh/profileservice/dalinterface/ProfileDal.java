@@ -5,5 +5,5 @@ import com.imadelfetouh.profileservice.model.response.ResponseModel;
 
 public interface ProfileDal {
 
-    ResponseModel<ProfileDTO> getProfile(String userId);
+    ResponseModel<ProfileDTO> getProfile(String userId, String ownId);
 }

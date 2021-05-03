@@ -17,35 +17,34 @@ import java.util.List;
 public class GetProfileExecuter implements QueryExecuter<ProfileDTO> {
 
     private String userId;
+    private String ownId;
 
-    public GetProfileExecuter(String userId) {
+    public GetProfileExecuter(String userId, String ownId) {
         this.userId = userId;
+        this.ownId = ownId;
     }
 
     @Override
     public ResponseModel<ProfileDTO> executeQuery(Session session) {
         ResponseModel<ProfileDTO> responseModel = new ResponseModel<>();
 
-        Query query = session.createQuery("SELECT u FROM User u JOIN FETCH u.profile p JOIN FETCH u.tweets t WHERE u.userId = :userId");
+        Query query = session.createQuery("SELECT new com.imadelfetouh.profileservice.model.dto.ProfileDTO(u.userId, u.username, u.photo, p.bio, p.location, p.website, (SELECT COUNT(f.user.id) FROM Following f WHERE f.user.userId = :userId), (SELECT COUNT(f.userFollowing.id) FROM Following f WHERE f.userFollowing.userId = :userId), (SELECT f.id FROM Following f WHERE f.user.userId = :ownId AND f.userFollowing.userId = :userId)) FROM User u LEFT JOIN u.profile p WHERE u.userId = :userId");
         query.setParameter("userId", userId);
+        query.setParameter("ownId", ownId);
 
-        User user;
+        ProfileDTO profileDTO;
 
         try{
-            user = (User) query.getSingleResult();
+            profileDTO = (ProfileDTO) query.getSingleResult();
+            Query queryTweets = session.createQuery("SELECT new com.imadelfetouh.profileservice.model.dto.TweetDTO(t.tweetId, t.content, t.date, t.time, t.likes) FROM Tweet t WHERE t.user.userId = :userId");
+            queryTweets.setParameter("userId", userId);
+            List<TweetDTO> tweets = queryTweets.getResultList();
+            profileDTO.setTweets(tweets);
         }
         catch (NoResultException e) {
             responseModel.setResponseType(ResponseType.USERNOTFOUND);
             return responseModel;
         }
-
-        List<TweetDTO> tweets = new ArrayList<>();
-        for(Tweet tweet : user.getTweets()) {
-            TweetDTO tweetDTO = new TweetDTO(tweet.getTweetId(), tweet.getContent(), tweet.getDate(), tweet.getTime(), tweet.getLikes());
-            tweets.add(tweetDTO);
-        }
-
-        ProfileDTO profileDTO = new ProfileDTO(userId, user.getUsername(), user.getPhoto(), user.getProfile().getBio(), user.getProfile().getLocation(), user.getProfile().getWebsite(), tweets);
 
         responseModel.setData(profileDTO);
 

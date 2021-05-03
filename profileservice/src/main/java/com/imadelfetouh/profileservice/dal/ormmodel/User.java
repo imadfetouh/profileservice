@@ -41,6 +41,14 @@ public class User implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "userId")
     private List<Tweet> tweets;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    private List<Following> followings;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "following_id", referencedColumnName = "userId")
+    private List<Following> followers;
+
     public String getUsername() {
         return username;
     }
@@ -55,5 +63,13 @@ public class User implements Serializable {
 
     public List<Tweet> getTweets() {
         return tweets;
+    }
+
+    public List<Following> getFollowings() {
+        return followings;
+    }
+
+    public List<Following> getFollowers() {
+        return followers;
     }
 }

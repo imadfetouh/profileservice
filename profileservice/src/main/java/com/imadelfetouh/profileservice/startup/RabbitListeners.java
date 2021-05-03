@@ -1,5 +1,6 @@
 package com.imadelfetouh.profileservice.startup;
 
+import com.imadelfetouh.profileservice.rabbit.thread.AddFollowingThread;
 import com.imadelfetouh.profileservice.rabbit.thread.AddTweetThread;
 import com.imadelfetouh.profileservice.rabbit.thread.AddUserThread;
 import com.imadelfetouh.profileservice.rabbit.thread.DeleteUserThread;
@@ -18,7 +19,7 @@ public class RabbitListeners implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Executor executor = Executors.newScheduledThreadPool(3);
+        Executor executor = Executors.newScheduledThreadPool(4);
 
         AddUserThread addUserThread = new AddUserThread();
         executor.execute(addUserThread);
@@ -28,5 +29,8 @@ public class RabbitListeners implements ApplicationRunner {
 
         AddTweetThread addTweetThread = new AddTweetThread();
         executor.execute(addTweetThread);
+
+        AddFollowingThread addFollowingThread = new AddFollowingThread();
+        executor.execute(addFollowingThread);
     }
 }

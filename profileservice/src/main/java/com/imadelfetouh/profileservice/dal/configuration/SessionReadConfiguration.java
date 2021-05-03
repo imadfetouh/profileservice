@@ -1,5 +1,6 @@
 package com.imadelfetouh.profileservice.dal.configuration;
 
+import com.imadelfetouh.profileservice.dal.ormmodel.Following;
 import com.imadelfetouh.profileservice.dal.ormmodel.Profile;
 import com.imadelfetouh.profileservice.dal.ormmodel.Tweet;
 import com.imadelfetouh.profileservice.dal.ormmodel.User;
@@ -22,11 +23,12 @@ public class SessionReadConfiguration {
 
         Properties properties = readWriteConfiguration.getProperties();
         configuration.addProperties(properties);
-        configuration.getProperties().put(Environment.URL, "jdbc:mysql://"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_HOST")+":"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_PORT")+"/profileservice?createDatabaseIfNotExist=true");
+        configuration.getProperties().put(Environment.URL, "jdbc:mysql://"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_HOST")+":"+System.getenv("PROFILESERVICE_MYSQL_REPLICA_PORT")+"/profileservice");
 
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Profile.class);
         configuration.addAnnotatedClass(Tweet.class);
+        configuration.addAnnotatedClass(Following.class);
 
         sessionFactory = configuration.configure().buildSessionFactory();
     }

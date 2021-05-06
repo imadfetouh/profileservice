@@ -1,21 +1,23 @@
 package com.imadelfetouh.profileservice.dal.queryexecuter;
 
 import com.imadelfetouh.profileservice.dal.configuration.QueryExecuter;
+import com.imadelfetouh.profileservice.dal.ormmodel.Like;
 import com.imadelfetouh.profileservice.dal.ormmodel.Tweet;
 import com.imadelfetouh.profileservice.dal.ormmodel.User;
-import com.imadelfetouh.profileservice.model.dto.NewTweetDTO;
 import com.imadelfetouh.profileservice.model.response.ResponseModel;
 import com.imadelfetouh.profileservice.model.response.ResponseType;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
 
-public class AddTweetExecuter implements QueryExecuter<Void> {
+public class LikeTweetExecuter implements QueryExecuter<Void> {
 
-    private NewTweetDTO newTweetDTO;
+    private String userId;
+    private String tweetId;
 
-    public AddTweetExecuter(NewTweetDTO newTweetDTO) {
-        this.newTweetDTO = newTweetDTO;
+    public LikeTweetExecuter(String userId, String tweetId) {
+        this.userId = userId;
+        this.tweetId = tweetId;
     }
 
     @Override
@@ -23,21 +25,27 @@ public class AddTweetExecuter implements QueryExecuter<Void> {
         ResponseModel<Void> responseModel = new ResponseModel<>();
 
         User user = getUser(session);
+        Tweet tweet = getTweet(session);
 
-        Tweet tweet = new Tweet(newTweetDTO.getTweetId(), newTweetDTO.getContent(), newTweetDTO.getDate(), newTweetDTO.getTime(), user);
+        Like like = new Like(tweet, user);
 
-        session.persist(tweet);
+        session.persist(like);
 
         session.getTransaction().commit();
 
         responseModel.setResponseType(ResponseType.CORRECT);
-
         return responseModel;
     }
 
     private User getUser(Session session) {
         Query query = session.createQuery("SELECT u FROM User u WHERE u.userId = :userId");
-        query.setParameter("userId", newTweetDTO.getUserId());
+        query.setParameter("userId", userId);
         return (User) query.getSingleResult();
+    }
+
+    private Tweet getTweet(Session session) {
+        Query query = session.createQuery("SELECT t FROM Tweet t WHERE t.tweetId = :tweetId");
+        query.setParameter("tweetId", tweetId);
+        return (Tweet) query.getSingleResult();
     }
 }

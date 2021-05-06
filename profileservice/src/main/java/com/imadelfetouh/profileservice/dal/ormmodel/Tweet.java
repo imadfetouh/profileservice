@@ -2,6 +2,7 @@ package com.imadelfetouh.profileservice.dal.ormmodel;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "tweet")
@@ -11,12 +12,11 @@ public class Tweet implements Serializable {
 
     }
 
-    public Tweet(String tweetId, String content, Long date, String time, Integer likes, User user) {
+    public Tweet(String tweetId, String content, Long date, String time, User user) {
         this.tweetId = tweetId;
         this.content = content;
         this.date = date;
         this.time = time;
-        this.likes = likes;
         this.user = user;
     }
 
@@ -37,8 +37,9 @@ public class Tweet implements Serializable {
     @Column(name = "time")
     private String time;
 
-    @Column(name = "likes")
-    private Integer likes;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "tweet_id", referencedColumnName = "tweetId")
+    private List<Like> likes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "userId")
@@ -60,7 +61,7 @@ public class Tweet implements Serializable {
         return time;
     }
 
-    public Integer getLikes() {
+    public List<Like> getLikes() {
         return likes;
     }
 }

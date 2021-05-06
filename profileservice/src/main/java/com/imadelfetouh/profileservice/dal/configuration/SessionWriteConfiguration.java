@@ -1,9 +1,6 @@
 package com.imadelfetouh.profileservice.dal.configuration;
 
-import com.imadelfetouh.profileservice.dal.ormmodel.Following;
-import com.imadelfetouh.profileservice.dal.ormmodel.Profile;
-import com.imadelfetouh.profileservice.dal.ormmodel.Tweet;
-import com.imadelfetouh.profileservice.dal.ormmodel.User;
+import com.imadelfetouh.profileservice.dal.ormmodel.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -29,6 +26,7 @@ public class SessionWriteConfiguration {
         configuration.addAnnotatedClass(Profile.class);
         configuration.addAnnotatedClass(Tweet.class);
         configuration.addAnnotatedClass(Following.class);
+        configuration.addAnnotatedClass(Like.class);
 
         sessionFactory = configuration.configure().buildSessionFactory();
     }

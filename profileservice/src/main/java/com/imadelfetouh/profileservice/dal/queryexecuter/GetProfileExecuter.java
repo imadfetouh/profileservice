@@ -1,8 +1,6 @@
 package com.imadelfetouh.profileservice.dal.queryexecuter;
 
 import com.imadelfetouh.profileservice.dal.configuration.QueryExecuter;
-import com.imadelfetouh.profileservice.dal.ormmodel.Tweet;
-import com.imadelfetouh.profileservice.dal.ormmodel.User;
 import com.imadelfetouh.profileservice.model.dto.ProfileDTO;
 import com.imadelfetouh.profileservice.model.dto.TweetDTO;
 import com.imadelfetouh.profileservice.model.response.ResponseModel;
@@ -11,7 +9,6 @@ import org.hibernate.Session;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GetProfileExecuter implements QueryExecuter<ProfileDTO> {
@@ -36,7 +33,7 @@ public class GetProfileExecuter implements QueryExecuter<ProfileDTO> {
 
         try{
             profileDTO = (ProfileDTO) query.getSingleResult();
-            Query queryTweets = session.createQuery("SELECT new com.imadelfetouh.profileservice.model.dto.TweetDTO(t.tweetId, t.content, t.date, t.time, t.likes) FROM Tweet t WHERE t.user.userId = :userId");
+            Query queryTweets = session.createQuery("SELECT new com.imadelfetouh.profileservice.model.dto.TweetDTO(t.tweetId, t.content, t.date, t.time, size(t.likes), (CASE WHEN (SELECT l.user FROM t.likes l WHERE l.user.userId = :userId AND l.tweet.tweetId = t.tweetId) = null then false else true end)) FROM Tweet t WHERE t.user.userId = :userId");
             queryTweets.setParameter("userId", userId);
             List<TweetDTO> tweets = queryTweets.getResultList();
             profileDTO.setTweets(tweets);

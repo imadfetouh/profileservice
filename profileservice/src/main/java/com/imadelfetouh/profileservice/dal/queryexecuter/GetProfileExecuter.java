@@ -33,7 +33,8 @@ public class GetProfileExecuter implements QueryExecuter<ProfileDTO> {
 
         try{
             profileDTO = (ProfileDTO) query.getSingleResult();
-            Query queryTweets = session.createQuery("SELECT new com.imadelfetouh.profileservice.model.dto.TweetDTO(t.tweetId, t.content, t.date, t.time, size(t.likes), (CASE WHEN (SELECT l.user FROM t.likes l WHERE l.user.userId = :userId AND l.tweet.tweetId = t.tweetId) = null then false else true end)) FROM Tweet t WHERE t.user.userId = :userId");
+            Query queryTweets = session.createQuery("SELECT new com.imadelfetouh.profileservice.model.dto.TweetDTO(t.tweetId, t.content, t.date, t.time, size(t.likes), (CASE WHEN (SELECT l.user FROM t.likes l WHERE l.user.userId = :ownId AND l.tweet.tweetId = t.tweetId) = null then false else true end)) FROM Tweet t WHERE t.user.userId = :userId");
+            queryTweets.setParameter("ownId", userId);
             queryTweets.setParameter("userId", userId);
             List<TweetDTO> tweets = queryTweets.getResultList();
             profileDTO.setTweets(tweets);

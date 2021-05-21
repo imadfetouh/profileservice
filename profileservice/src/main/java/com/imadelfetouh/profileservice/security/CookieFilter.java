@@ -1,6 +1,7 @@
 package com.imadelfetouh.profileservice.security;
 
 import com.imadelfetouh.profileservice.jwt.ValidateJWTToken;
+import com.imadelfetouh.profileservice.rabbit.RabbitConfiguration;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -32,6 +33,17 @@ public class CookieFilter implements Filter {
             }
             else{
                 String userData = ValidateJWTToken.getInstance().getUserData(cookie.getValue());
+                if(userData == null) {
+                    httpServletResponse.setStatus(401);
+                    return;
+                }
+                else {
+                    if(RabbitConfiguration.getInstance().getConnection() == null && !httpServletRequest.getMethod().equals("GET")) {
+                        logger.info("Request made, but rabbit is down");
+                        httpServletResponse.setStatus(503);
+                        return;
+                    }
+                }
 
                 httpServletRequest.setAttribute("userdata", userData);
                 filterChain.doFilter(httpServletRequest, httpServletResponse);

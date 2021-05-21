@@ -22,11 +22,7 @@ public class SessionWriteConfiguration {
         configuration.addProperties(properties);
         configuration.getProperties().put(Environment.URL, "jdbc:mysql://"+System.getenv("PROFILESERVICE_MYSQL_MASTER_HOST")+":"+System.getenv("PROFILESERVICE_MYSQL_MASTER_PORT")+"/profileservice?createDatabaseIfNotExist=true");
 
-        configuration.addAnnotatedClass(User.class);
-        configuration.addAnnotatedClass(Profile.class);
-        configuration.addAnnotatedClass(Tweet.class);
-        configuration.addAnnotatedClass(Following.class);
-        configuration.addAnnotatedClass(Like.class);
+        AddClasses.getInstance().setClasses(configuration);
 
         sessionFactory = configuration.configure().buildSessionFactory();
     }
